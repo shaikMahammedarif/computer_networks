@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Browser</title>
+</head>
+
+
+  <p>
+   5.CRC
+
+import java.io.*;
+class CRC
+{
+public static void main(String args[]) throws IOException
+
+{
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+System.out.println(&quot;Enter Generator:&quot;);
+String gen = br.readLine();
+System.out.println(&quot;Enter Data:&quot;);
+String data = br.readLine();
+String code = data;
+while(code.length() &lt; (data.length() + gen.length() - 1))
+code = code + &quot;0&quot;;
+code = data + div(code,gen);
+System.out.println(&quot;The transmitted Code Word is: &quot; + code);
+System.out.println(&quot;Please enter the received Code Word: &quot;);
+String rec = br.readLine();
+if(Integer.parseInt(div(rec,gen)) == 0)
+System.out.println(&quot;The received code word contains no errors.&quot;);
+else
+System.out.println(&quot;The received code word contains errors.&quot;);
+}
+
+static String div(String num1,String num2)
+{
+int pointer = num2.length();
+String result = num1.substring(0, pointer);
+String remainder = &quot;&quot;;
+for(int i = 0; i &lt; num2.length(); i++)
+{
+if(result.charAt(i) == num2.charAt(i))
+remainder += &quot;0&quot;;
+else
+remainder += &quot;1&quot;;
+
+}
+while(pointer &lt; num1.length())
+{
+if(remainder.charAt(0) == &#39;0&#39;)
+{
+remainder = remainder.substring(1, remainder.length());
+remainder = remainder +
+String.valueOf(num1.charAt(pointer)); pointer++;
+}
+result =
+remainder;
+remainder = &quot;&quot;;
+for(int i = 0; i &lt; num2.length(); i++)
+{
+if(result.charAt(i) ==
+num2.charAt(i)) remainder += &quot;0&quot;;
+else
+remainder += &quot;1&quot;;
+}
+}
+return remainder.substring(1,remainder.length());
+}
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6.Dijikstra's Algorithm
+
+import java.util.*;
+public class DijkstraSimple {
+    public static void main(String[] args) {
+        int V = 5; 
+        int source = 0; 
+        int[][] graph = {
+            { -1,10, -1, -1, 3 },
+            { 10, -1, 5, -1, 1 },
+            { -1, 5, -1, 7, 8 },
+            { -1, -1, 7, -1, 2 },
+            { 3, 1, 8, 2, -1 }
+        };  
+        int[] dist = new int[V];
+        boolean[] visited = new boolean[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[source] = 0;
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(Comparator.comparingInt(v -> dist[v]));
+        minHeap.add(source);
+        while (!minHeap.isEmpty()) {
+            int u = minHeap.poll();
+            if (visited[u]) continue;
+            visited[u] = true;
+            for (int v = 0; v < V; v++) {
+                if (graph[u][v] != -1 && dist[u] + graph[u][v] < dist[v]) {
+                    dist[v] = dist[u] + graph[u][v];
+                    minHeap.add(v);
+                }
+            }
+        }
+        System.out.println("Shortest distances from vertex " + source + " to all other vertices:");
+        for (int i = 0; i < V; i++) {
+            System.out.println("Vertex " + i + ": " + dist[i]);
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7.Leaky Bucket
+
+import java.util.*;
+class TestLeakyBucket {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter counter: ");
+        int counter = sc.nextInt();
+        int cpy = counter;
+        System.out.println("Enter the number of packets: ");
+        int pac_size = sc.nextInt();
+        Queue<Integer> q = new LinkedList<>();
+        
+        for (int i = 1; i <= pac_size; i++) {
+            System.out.println("Enter Packet " + i + ":");
+            int p = sc.nextInt();
+            q.add(p);
+        }
+        while (!q.isEmpty()) {
+            int pack = q.remove();
+            if (counter >= pack) {
+                System.out.println("Packet " + pack + " Sent to Network");
+                counter -= pack;
+            } else {
+                System.out.println("Insufficient tokens. Waiting for tokens to refill.");
+                try {
+                    Thread.sleep(1000); 
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                counter = cpy; 
+            }
+        }
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8.DVR
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class DynamicDistanceVectorRouting {
+    static final int INFINITY = 9999;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of nodes: ");
+        int numNodes = scanner.nextInt();
+        int[][] costMatrix = new int[numNodes][numNodes];
+        System.out.println("Enter the cost matrix (enter " + INFINITY + " for infinity):");
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                costMatrix[i][j] = scanner.nextInt();
+            }
+        }
+        int[][] distanceTable = new int[numNodes][numNodes];
+        for (int i = 0; i < numNodes; i++) {
+            distanceTable[i] = Arrays.copyOf(costMatrix[i], numNodes);
+        }
+        for (int k = 0; k < numNodes; k++) {
+            for (int i = 0; i < numNodes; i++) {
+                for (int j = 0; j < numNodes; j++) {
+                    if (distanceTable[i][j] > distanceTable[i][k] + distanceTable[k][j]) {
+                        distanceTable[i][j] = distanceTable[i][k] + distanceTable[k][j];
+                    }
+                }
+            }
+        }
+        System.out.println("Final Distance Table:");
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                System.out.print(distanceTable[i][j] + "\t");
+            }
+            System.out.println();
+        }
+        scanner.close();
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+9.DNS
+
+import java.net.InetAddress;
+import java.util.*;
+class DNS{
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int ch;
+        System.out.println("\nMenu: \n1.DNS Lookup\n2.Reverse DNS\n3.Exit\n");
+        System.out.println("Enter your choice");
+        ch = sc.nextInt();
+        sc.nextLine();
+        InetAddress add;
+        switch(ch){
+            case 1:
+                try{
+                System.out.println("Enter Host Name: ");
+                String hn = sc.nextLine();
+                add = InetAddress.getByName(hn);
+                System.out.println("IP Address: "+add.getHostAddress());
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case 2:
+                try{
+                System.out.println("Enter IP Address: ");
+                String ip = sc.nextLine();
+                InetAddress ia = InetAddress.getByName(ip);
+                System.out.println("Host Name: "+ia.getHostName());
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case 3:
+                System.out.println("Exit");
+                break;
+        }
+        
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10.Client-Server
+
+import java.net.*;
+import java.io.*;
+public class Server
+{
+	private Socket socket = null;
+	private ServerSocket server = null;
+	private DataInputStream in = null;
+	public Server(int port)
+	{
+		try
+		{
+			server = new ServerSocket(port);
+			System.out.println("Server started");
+			System.out.println("Waiting for a client ...");
+			socket = server.accept();
+			System.out.println("Client accepted");
+			in = new DataInputStream(System.in);
+			String line = "";
+			while (!line.equals("Over"))
+			{
+				try
+				{
+					line = in.readLine();
+					System.out.println(line);
+
+				}
+				catch(IOException i)
+				{
+					System.out.println(i);
+				}
+			}
+			System.out.println("Closing connection");
+		}
+		catch(IOException i)
+		{
+			System.out.println(i);
+		}
+	}
+	public static void main(String args[])
+	{
+		Server server = new Server(8000);
+	}
+}
+
+import java.io.*;
+import java.net.*;
+public class Client {
+	private Socket socket = null;
+	private DataInputStream input = null;
+	private DataOutputStream out = null;
+	public Client(String address, int port)
+	{
+		try {
+			socket = new Socket(address, port);
+			System.out.println("Connected");
+			input = new DataInputStream(System.in);
+			out = new DataOutputStream(
+				socket.getOutputStream());
+		}
+		catch (IOException i) {
+			System.out.println(i);
+			return;
+		}
+		String line = "";		
+		while (!line.equals("Over")) {
+			try {
+				line = input.readLine();
+				System.out.println(line);
+			}
+			catch (IOException i) {
+				System.out.println(i);
+			}
+		}
+		System.out.println("Closing Connection");
+	}
+	public static void main(String args[])
+	{
+		Client client = new Client("127.0.0.1", 3000);
+	}
+}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  </p>
+  <script src="script.js"></script>
+</body>
+
+</html>
